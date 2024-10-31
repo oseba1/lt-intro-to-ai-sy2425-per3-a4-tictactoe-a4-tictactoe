@@ -59,36 +59,36 @@ class TTTBoard:
 def play_tic_tac_toe() -> None:
     """Uses your class to play TicTacToe"""
 
-    def is_int(maybe_int: str):
-        """Returns True if val is int, False otherwise
-
-        Args:
-            maybe_int - string to check if it's an int
-
-        Returns:
-            True if maybe_int is an int, False otherwise
-        """
-        try:
-            int(maybe_int)
-            return True
-        except ValueError:
-            return False
-
     brd = TTTBoard()
     players = ["X", "O"]
     turn = 0
 
     while not brd.game_over():
         print(brd)
-        move: str = input(f"Player {players[turn]} what is your move? ")
 
-        if not is_int(move):
-            raise ValueError(
-                f"Given invalid position {move}, position must be integer between 0 and 8 inclusive"
-            )
+        while True:
+            try:
+                move: str = input(f"Player {players[turn]} what is your move? ")
+                #assert int(move) == int
 
-        if brd.make_move(players[turn], int(move)):
-            turn = not turn
+                if int(move) not in (0,1,2,3,4,5,6,7,8):
+                    raise ValueError
+
+                if brd.board[int(move)] != "*":
+                    raise ValueError
+                    
+            except ValueError:
+                print("Enter a valid index.")
+                continue
+            else:
+                break
+        
+        brd.make_move(players[turn], int(move))
+
+        if turn == 0:
+            turn = 1
+        elif turn == 1:
+            turn = 0
 
     print(f"\nGame over!\n\n{brd}")
     if brd.has_won(players[0]):
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     assert brd.has_won("O") == True
     assert brd.game_over() == True
 
-    print("All tests passed!")
+    #print("All tests passed!")
 
     # uncomment to play!
     play_tic_tac_toe()
